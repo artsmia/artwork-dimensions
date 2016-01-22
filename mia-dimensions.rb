@@ -1,4 +1,5 @@
 require 'pry'
+require 'fileutils'
 require 'dimension_drawer'
 
 class MiaArtwork
@@ -14,6 +15,15 @@ class MiaArtwork
   def process_dimensions
     @dimensions = dimensionString.split("\n").map {|d| Dimension.new(d)}
   end
+
+  def save_dimension_files!(prefix='')
+    dir = File.join(prefix, "svgs", @id.to_s)
+    file = File.expand_path("../#{dir}", __FILE__)
+    FileUtils::mkdir_p(dir)
+    @dimensions.each do |dimension|
+      IO.write("#{file}/#{dimension.entity}.svg", dimension.project!)
+    end
+  end
 end
 
 class Dimension
@@ -27,5 +37,13 @@ class Dimension
 
     @centimeters = cm && cm[1]
     @entity = entity && entity[1]
+  end
+
+  def drawer
+    DimensionDrawer.new(@width, @height, @depth, 400, 320)
+  end
+
+  def project!
+    self.drawer.cabinet_projection
   end
 end

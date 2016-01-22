@@ -21,6 +21,14 @@ describe "artwork dimensions" do
     it "has accessible dimensions" do
       art.dimensions.must_be_kind_of Array
     end
+
+    it "saves dimension projection svg files" do
+      art.save_dimension_files!('test')
+      File.exist?("test/svgs/529/canvas.svg").must_equal true
+      File.exist?("test/svgs/529/outer frame.svg").must_equal true
+    end
+
+    after { FileUtils.rm_rf("test/svgs") }
   end
 
   describe Dimension do
@@ -42,6 +50,14 @@ describe "artwork dimensions" do
         d0.send(aspect).must_equal canvas
         d1.send(aspect).must_equal frame
       end
+    end
+
+    it "returns a dimension drawer" do
+      d0.drawer.must_be_kind_of DimensionDrawer
+    end
+
+    it "and a cabinet projection" do
+      d0.project!
     end
   end
 end
