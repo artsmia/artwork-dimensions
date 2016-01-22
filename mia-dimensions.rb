@@ -11,7 +11,7 @@ class MiaArtwork
     @id = id
     @dimensionString = dimensionString
 
-    self.process_dimensions()
+    self.process_dimensions
   end
 
   def process_dimensions
@@ -35,6 +35,7 @@ class Dimension
     cm = string.match(/\(([0-9\.]+\s?x\s?[0-9\.]+\s?(x\s?[0-9\.]+\s?)?cm)\)/)
     entity = string.strip.match(/\(([a-zA-Z ]+?)\)$/)
     @width, @height, @depth = cm && cm[1].split(/\s?x\s?|\s?cm/).map(&:to_f)
+    @depth = 1 if @depth.nil?
 
     @centimeters = cm && cm[1]
   end
