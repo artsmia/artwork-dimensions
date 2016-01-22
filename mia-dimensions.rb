@@ -12,8 +12,7 @@ class MiaArtwork
   end
 
   def process_dimensions
-    @dimensions = dimensionString.split("\n")
-    @dimensions.map {|d| Dimension.new(d)}
+    @dimensions = dimensionString.split("\n").map {|d| Dimension.new(d)}
   end
 end
 
