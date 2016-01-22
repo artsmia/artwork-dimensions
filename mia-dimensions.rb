@@ -15,10 +15,12 @@ class MiaArtwork
   end
 
   def process_dimensions
-    @dimensions = dimensionString.split("\n").map {|d| Dimension.new(d)}
+    @dimensions ||= @dimensionString && @dimensionString.split("\n").map {|d| Dimension.new(d)}
   end
 
-  def save_dimension_files!(prefix='')
+  def save_dimension_files!(prefix='.')
+    return unless @dimensions
+
     dir = File.join(prefix, "svgs", @id.to_s)
     file = File.expand_path("../#{dir}", __FILE__)
     FileUtils::mkdir_p(dir)
@@ -57,6 +59,9 @@ class RedisMiaArtwork < MiaArtwork
     @dimensionString = data["dimension"]
 
     self.process_dimensions
+  rescue JSON::ParserError
+    @dimensionString = ''
+    @dimensions = nil
   end
 
   def self.redis

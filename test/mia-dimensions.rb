@@ -28,6 +28,12 @@ describe "artwork dimensions" do
       File.exist?("test/svgs/529/outer-frame.svg").must_equal true
     end
 
+    it "doesn't save files for invalid JSON" do
+      invalid = RedisMiaArtwork.new(6042)
+      invalid.save_dimension_files!('test')
+      File.exist?("test/svgs/6042").must_equal false
+    end
+
     after { FileUtils.rm_rf("test/svgs") }
   end
 
