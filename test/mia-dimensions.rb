@@ -61,3 +61,23 @@ describe "artwork dimensions" do
     end
   end
 end
+
+describe RedisMiaArtwork do
+  it "pulls its dimensions from redis" do
+    jali = RedisMiaArtwork.new(13611)
+    jali.dimensionString.must_equal "49 x 36 1/2 x 3 3/8 in. (124.5 x 92.7 x 8.6 cm)"
+  end
+
+  it "knows all the buckets" do
+    buckets = RedisMiaArtwork.buckets
+    buckets.must_be_kind_of Array
+    buckets.size.must_be_within_epsilon 123, 10
+  end
+
+  it "knows all the artwork ids" do
+    ids = RedisMiaArtwork.all_ids
+    ids.must_be_kind_of Array
+    ids.must_include "529"
+    ids.size.must_be_within_epsilon 90000, 10000
+  end
+end
