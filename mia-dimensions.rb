@@ -19,12 +19,13 @@ class MiaArtwork
   end
 
   def save_dimension_files!(prefix='.')
-    return unless @dimensions
+    valid_dimensions = @dimensions && @dimensions.select(&:valid?)
+    return unless valid_dimensions
 
     dir = File.join(prefix, "svgs", @id.to_s)
     file = File.expand_path("../#{dir}", __FILE__)
     FileUtils::mkdir_p(dir)
-    @dimensions.each do |dimension|
+    valid_dimensions.each do |dimension|
       IO.write("#{file}/#{dimension.entity.gsub(' ', '-')}.svg", dimension.project!)
     end
   end
@@ -48,6 +49,10 @@ class Dimension
 
   def project!
     self.drawer.cabinet_projection
+  end
+
+  def valid?
+    @width && @height
   end
 end
 
