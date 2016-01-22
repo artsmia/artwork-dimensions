@@ -28,6 +28,11 @@ describe "artwork dimensions" do
       File.exist?("test/svgs/529/outer-frame.svg").must_equal true
     end
 
+    it "symlinks one of the files to 'dimensions.svg'" do
+      art.save_dimension_files!('test')
+      File.exist?("test/svgs/529/dimensions.svg").must_equal true
+    end
+
     it "doesn't save files for invalid JSON" do
       invalid = RedisMiaArtwork.new(6042)
       invalid.save_dimension_files!('test')
@@ -77,7 +82,7 @@ describe "artwork dimensions" do
       d.width.must_equal 33.02
       d.height.must_equal 25.4
       d.depth.must_equal 1
-      d.entity.must_equal 'default'
+      d.entity.must_equal 'dimensions'
     end
   end
 end

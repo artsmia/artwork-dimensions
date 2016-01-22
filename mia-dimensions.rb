@@ -23,10 +23,16 @@ class MiaArtwork
     return unless valid_dimensions
 
     dir = File.join(prefix, "svgs", @id.to_s)
-    file = File.expand_path("../#{dir}", __FILE__)
+    absolute_dir = File.expand_path("../#{dir}", __FILE__)
+
     FileUtils::mkdir_p(dir)
-    valid_dimensions.each do |dimension|
-      IO.write("#{file}/#{dimension.entity.gsub(' ', '-')}.svg", dimension.project!)
+    valid_dimensions.each.with_index do |dimension, i|
+      file = "#{absolute_dir}/#{dimension.entity.gsub(' ', '-')}.svg"
+      IO.write(file, dimension.project!)
+      if i+1 == dimensions.length
+        symlink = File.join(absolute_dir, 'dimensions.svg')
+        FileUtils.ln_s(file, symlink, {force: true}) unless File.exist?(symlink)
+      end
     end
   end
 end
@@ -41,7 +47,7 @@ class Dimension
     @depth = 1 if @depth.nil?
 
     @centimeters = cm && cm[1]
-    @entity = entity ? entity[1] : 'default'
+    @entity = entity ? entity[1] : 'dimensions'
   end
 
   def drawer
