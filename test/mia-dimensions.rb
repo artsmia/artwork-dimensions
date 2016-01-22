@@ -25,7 +25,7 @@ describe "artwork dimensions" do
     it "saves dimension projection svg files" do
       art.save_dimension_files!('test')
       File.exist?("test/svgs/529/canvas.svg").must_equal true
-      File.exist?("test/svgs/529/outer frame.svg").must_equal true
+      File.exist?("test/svgs/529/outer-frame.svg").must_equal true
     end
 
     after { FileUtils.rm_rf("test/svgs") }

@@ -21,7 +21,7 @@ class MiaArtwork
     file = File.expand_path("../#{dir}", __FILE__)
     FileUtils::mkdir_p(dir)
     @dimensions.each do |dimension|
-      IO.write("#{file}/#{dimension.entity}.svg", dimension.project!)
+      IO.write("#{file}/#{dimension.entity.gsub(' ', '-')}.svg", dimension.project!)
     end
   end
 end
