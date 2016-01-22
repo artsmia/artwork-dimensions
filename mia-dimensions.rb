@@ -24,6 +24,7 @@ class Dimension
     cm = string.match(/\(([0-9\.]+\s?x\s?[0-9\.]+\s?(x\s?[0-9\.]+\s?)?cm)\)/)
     entity = string.strip.match(/\(([a-zA-Z ]+?)\)$/)
     @width, @height, @depth = cm[1].split(/\s?x\s?|\s?cm/).map(&:to_f)
+    @depth = 0 if @depth.nil?
 
     @centimeters = cm && cm[1]
     @entity = entity && entity[1]

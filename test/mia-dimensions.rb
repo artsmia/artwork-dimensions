@@ -37,7 +37,7 @@ describe "artwork dimensions" do
       {
         width: [110.17, 150.5],
         height: [92.28, 132.87],
-        depth: [nil, 11.43],
+        depth: [0, 11.43],
       }.each do |aspect, (canvas, frame)|
         d0.send(aspect).must_equal canvas
         d1.send(aspect).must_equal frame
