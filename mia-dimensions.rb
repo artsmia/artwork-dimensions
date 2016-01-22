@@ -41,6 +41,7 @@ class Dimension
     @depth = 1 if @depth.nil?
 
     @centimeters = cm && cm[1]
+    @entity = entity ? entity[1] : 'default'
   end
 
   def drawer

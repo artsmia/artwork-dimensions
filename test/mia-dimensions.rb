@@ -71,6 +71,14 @@ describe "artwork dimensions" do
     it "and a cabinet projection" do
       d0.project!
     end
+
+    it "handles dimensions without an entity" do
+      d = Dimension.new("13 x 10 in. (33.02 x 25.4 cm)")
+      d.width.must_equal 33.02
+      d.height.must_equal 25.4
+      d.depth.must_equal 1
+      d.entity.must_equal 'default'
+    end
   end
 end
 
