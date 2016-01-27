@@ -15,7 +15,9 @@ class MiaArtwork
   end
 
   def process_dimensions
-    @dimensions ||= @dimensionString && @dimensionString.split("\n").map {|d| Dimension.new(d)}
+    @dimensions ||= @dimensionString && @dimensionString.split("\n").map do |d|
+      Dimension.new(d, @data)
+    end
   end
 
   def save_dimension_files!(prefix='.')
@@ -40,7 +42,7 @@ end
 class Dimension
   attr_reader :centimeters, :entity, :width, :height, :depth
 
-  def initialize(string)
+  def initialize(string, data=nil)
     cm = string.match(/\(([0-9\.]+\s?x\s?[0-9\.]+\s?(x\s?[0-9\.]+\s?)?cm)\)/)
     entity = string.strip.match(/\(([a-zA-Z ]+?)\)$/)
     @width, @height, @depth = cm && cm[1].split(/\s?x\s?|\s?cm/).map(&:to_f)
@@ -48,6 +50,9 @@ class Dimension
 
     @centimeters = cm && cm[1]
     @entity = entity ? entity[1] : 'dimensions'
+    @data = data
+
+    self.check_dimension_rotation
   end
 
   def drawer
@@ -61,14 +66,27 @@ class Dimension
   def valid?
     @width && @height
   end
+
+  def check_dimension_rotation
+    if @width && @height && @data && @data['image_width']
+      iw = @data['image_width'].to_f
+      ih = @data['image_height'].to_f
+      return unless iw && ih
+      imageAspect = iw/ih
+      dimensionAspect = @width/@height
+      if imageAspect < 1 && dimensionAspect > 1 || imageAspect > 1 && dimensionAspect < 1
+        @width, @height = @height, @width
+      end
+    end
+  end
 end
 
 class RedisMiaArtwork < MiaArtwork
   def initialize(id)
     @id = id && id.to_i
     rawData = self.class.redis.hget("object:#{@id/1000}", id)
-    data = JSON.parse(rawData)
-    @dimensionString = data["dimension"]
+    @data = JSON.parse(rawData)
+    @dimensionString = @data["dimension"]
 
     self.process_dimensions
   rescue JSON::ParserError

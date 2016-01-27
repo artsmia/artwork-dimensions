@@ -105,4 +105,11 @@ describe RedisMiaArtwork do
     ids.must_include "529"
     ids.size.must_be_within_epsilon 90000, 10000
   end
+
+  it "transform width and height to match image dims" do
+    wellhead = RedisMiaArtwork.new(12874)
+    wellhead.dimensionString.must_equal "15 3/4 x 8 3/4 in. (40 x 22.23 cm)"
+    wellhead.dimensions[0].width.must_equal 22.23
+    wellhead.dimensions[0].height.must_equal 40
+  end
 end
