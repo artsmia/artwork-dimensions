@@ -29,11 +29,12 @@ class MiaArtwork
 
     FileUtils::mkdir_p(dir)
     valid_dimensions.each.with_index do |dimension, i|
-      file = "#{absolute_dir}/#{dimension.entity.gsub(' ', '-')}.svg"
+      name = "#{dimension.entity.gsub(' ', '-')}.svg"
+      file = "#{absolute_dir}/#{name}"
       IO.write(file, dimension.project!)
       if i+1 == dimensions.length
-        symlink = File.join(absolute_dir, 'dimensions.svg')
-        FileUtils.ln_s(file, symlink, {force: true}) unless File.exist?(symlink)
+        symlink = File.join(dir, 'dimensions.svg')
+        FileUtils.ln_s(name, symlink, {force: true}) unless File.exist?(symlink)
       end
     end
   end
