@@ -90,6 +90,12 @@ describe "artwork dimensions" do
       d = RedisMiaArtwork.new(115837).dimensions[0]
       d.entity.must_equal('approx')
 
+      # handle unicode '×' :/
+      d = RedisMiaArtwork.new(80117).dimensions[0]
+      d.entity.must_equal('image')
+      d.width.must_equal 23.9
+      d.height.must_equal 36.1
+
       # too many parentheses
       a = RedisMiaArtwork.new(5788)
       d = a.dimensions[0]
