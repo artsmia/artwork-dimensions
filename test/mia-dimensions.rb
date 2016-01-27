@@ -62,7 +62,7 @@ describe "artwork dimensions" do
       {
         width: [110.17, 150.5],
         height: [92.28, 132.87],
-        depth: [1, 11.43],
+        depth: [0.1, 11.43],
       }.each do |aspect, (canvas, frame)|
         d0.send(aspect).must_equal canvas
         d1.send(aspect).must_equal frame
@@ -81,7 +81,7 @@ describe "artwork dimensions" do
       d = Dimension.new("13 x 10 in. (33.02 x 25.4 cm)")
       d.width.must_equal 33.02
       d.height.must_equal 25.4
-      d.depth.must_equal 1
+      d.depth.must_equal 0.1
       d.entity.must_equal 'dimensions'
     end
   end
