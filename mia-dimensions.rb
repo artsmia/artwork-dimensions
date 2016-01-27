@@ -45,12 +45,12 @@ class Dimension
 
   def initialize(string, data=nil)
     cm = string.match(/\(([0-9\.]+\s?x\s?[0-9\.]+\s?(x\s?[0-9\.]+\s?)?cm)\)/)
-    entity = string.strip.match(/\(([a-zA-Z ]+?)\)$/)
+    entity = string.strip.match(/cm\)\s\(*([^\(]+)\)$/)
     @width, @height, @depth = cm && cm[1].split(/\s?x\s?|\s?cm/).map(&:to_f)
     @depth = 0.1 if @depth.nil?
 
     @centimeters = cm && cm[1]
-    @entity = entity ? entity[1] : 'dimensions'
+    @entity = entity ? entity[1].gsub(/[^a-zA-Z]+/, ' ').strip : 'dimensions'
     @data = data
 
     self.check_dimension_rotation

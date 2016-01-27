@@ -84,6 +84,22 @@ describe "artwork dimensions" do
       d.depth.must_equal 0.1
       d.entity.must_equal 'dimensions'
     end
+
+    it "handles weird dimension entity strings" do
+      # remove periods
+      d = RedisMiaArtwork.new(115837).dimensions[0]
+      d.entity.must_equal('approx')
+
+      # too many parentheses
+      a = RedisMiaArtwork.new(5788)
+      d = a.dimensions[0]
+      d.entity.must_equal('a body')
+
+      # commas
+      a = RedisMiaArtwork.new(113249)
+      a.dimensions[0].entity.must_equal 'image each'
+      a.dimensions[1].entity.must_equal 'mount overall'
+    end
   end
 end
 
