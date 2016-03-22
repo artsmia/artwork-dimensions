@@ -13,4 +13,9 @@ clean:
 deploy:
 	rsync -avz svgs/ collections:/var/www/art/dimensions
 
+volumes:
+	ruby -r ./mia-dimensions.rb -e "RedisMiaArtwork.volume_elasticsearch" \
+  > ../collection-elasticsearch/bulk/volumes.json
+
+
 .PHONY: test all single clean deploy

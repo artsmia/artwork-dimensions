@@ -38,6 +38,10 @@ class MiaArtwork
       end
     end
   end
+
+  def volume
+    dimensions && dimensions[0].volume
+  end
 end
 
 class Dimension
@@ -47,7 +51,10 @@ class Dimension
     cm = string.match(/\(([0-9\.]+\s?[x\|×]\s?[0-9\.]+\s?([x\|×]\s?[0-9\.]+\s?)?cm)\)/)
     entity = string.strip.match(/cm\)\s\(*([^\(]+)\)$/)
     @width, @height, @depth = cm && cm[1].split(/\s?[x\|×]\s?|\s?cm/).map(&:to_f)
-    @depth = 0.1 if @depth.nil?
+    if @depth.nil?
+      @depth = 0.1
+      @imaginary_depth = true
+    end
 
     @centimeters = cm && cm[1]
     @entity = entity ? entity[1].gsub(/[^a-zA-Z]+/, ' ').strip : 'dimensions'
@@ -79,6 +86,18 @@ class Dimension
         @width, @height = @height, @width
       end
     end
+  end
+
+  def volume
+    @width*@height * (@imaginary_depth ? 1 : @depth)
+  end
+
+  def volume2d
+    @width*@height
+  end
+
+  def volume3d
+    @width*@height * (@imaginary_depth ? 1 : @depth)
   end
 end
 
@@ -118,6 +137,21 @@ class RedisMiaArtwork < MiaArtwork
     self.all_ids.each do |id|
       printf id + ' '
       RedisMiaArtwork.new(id.to_i).save_dimension_files!
+    end
+  end
+
+  def self.volume_elasticsearch
+    self.all_ids.each do |id|
+      art = RedisMiaArtwork.new(id.to_i)
+      d = art.dimensions && art.dimensions[0]
+      if d && d.width && d.height && d.volume
+        [
+          {update: {_type: "object_data", _id: id}},
+          {doc: {volume: d.volume}}
+        ].first(100).map do |json|
+          puts JSON.dump(json)
+        end
+      end
     end
   end
 end

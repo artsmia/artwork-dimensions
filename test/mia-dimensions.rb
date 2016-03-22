@@ -45,6 +45,10 @@ describe "artwork dimensions" do
       File.exist?("test/svgs/6042").must_equal false
     end
 
+    it "computes volume for the default dimension" do
+      art.volume.must_equal d0.volume
+    end
+
     after { FileUtils.rm_rf("test/svgs") }
   end
 
@@ -105,6 +109,22 @@ describe "artwork dimensions" do
       a = RedisMiaArtwork.new(113249)
       a.dimensions[0].entity.must_equal 'image each'
       a.dimensions[1].entity.must_equal 'mount overall'
+    end
+
+    it "computes volume" do
+      # (110.17 x 92.28 cm) (canvas)
+      d0.volume.must_equal 10166.4876
+      # (150.5 x 132.87 x 11.43 cm) (outer frame)
+      d1.volume.must_equal 228564.96705
+    end
+
+    it "computes 2d and 3d volume?" do
+      # 2d is w * h
+      d0.volume2d.must_equal 10166.4876
+      # 3d w * h * d
+      d1.volume2d.must_equal 19996.935
+      d1.volume3d.must_equal 228564.96705
+      # should they both be indexed in ES?
     end
   end
 end
