@@ -11,7 +11,7 @@ clean:
 	rm -rf svgs
 
 deploy:
-	rsync -avz svgs/ collections:/var/www/art/dimensions
+	s3cmd sync -P -r svgs/ s3://mia-dimensions/
 
 volumes:
 	ruby -r ./mia-dimensions.rb -e "RedisMiaArtwork.volume_elasticsearch" \
